@@ -1,0 +1,108 @@
+{
+  "portal_name": "yoga",
+  "label": "Yoga dla opornych",
+  "sections": [
+    {
+      "name": "lessons",
+      "label": "zajecia",
+      "data": [
+        {
+          "type": "text",
+          "content": {
+            "title": "Jakis tam naglowek paragrafu",
+            "lead": "Jakis tam lead",
+            "text": "The final thing we need to do is to tell Angular where we want the ArtistTrackListComponent and ArtistAlbumListComponent components to be injected into the page, we do that by adding in another router-outlet directive in our Artist template like so:"
+          }
+        },
+        {
+          "type": "gallery",
+          "content": {
+            "title": "Galeria obrazow z dupeczkami",
+            "images": [
+              {
+                "url": "https://www.wykop.pl/cdn/c3201142/comment_gUPKVZh9BWqVXPhMsba0biTQ8Ug7Ihn2,w400.jpg",
+                "title": "fajna dupeczka 1"
+              },
+              {
+                "url": "https://www.wykop.pl/cdn/c3201142/comment_gUPKVZh9BWqVXPhMsba0biTQ8Ug7Ihn2,w400.jpg",
+                "title": "fajna dupeczka 2"
+              },
+              {
+                "url": "https://www.wykop.pl/cdn/c3201142/comment_gUPKVZh9BWqVXPhMsba0biTQ8Ug7Ihn2,w400.jpg",
+                "title": "fajna dupeczka 3"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "treners",
+      "label": "trenerzy",
+      "data": [
+        {
+          "type": "text",
+          "content": {
+            "title": "Jakis tam naglowek paragrafu",
+            "lead": "Jakis tam lead",
+            "text": "The final thing we need to do is to tell Angular where we want the ArtistTrackListComponent and ArtistAlbumListComponent components to be injected into the page, we do that by adding in another router-outlet directive in our Artist template like so:"
+          }
+        },
+        {
+          "type": "gallery",
+          "content": {
+            "title": "Galeria obrazow z dupeczkami",
+            "images": [
+              {
+                "url": "https://www.wykop.pl/cdn/c3201142/comment_gUPKVZh9BWqVXPhMsba0biTQ8Ug7Ihn2,w400.jpg",
+                "title": "fajna dupeczka 1"
+              },
+              {
+                "url": "https://www.wykop.pl/cdn/c3201142/comment_gUPKVZh9BWqVXPhMsba0biTQ8Ug7Ihn2,w400.jpg",
+                "title": "fajna dupeczka 2"
+              },
+              {
+                "url": "https://www.wykop.pl/cdn/c3201142/comment_gUPKVZh9BWqVXPhMsba0biTQ8Ug7Ihn2,w400.jpg",
+                "title": "fajna dupeczka 3"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "callendar",
+      "label": "kalendarz",
+      "data": [
+        {
+          "type": "text",
+          "content": {
+            "title": "Jakis tam naglowek paragrafu",
+            "lead": "Jakis tam lead",
+            "text": "The final thing we need to do is to tell Angular where we want the ArtistTrackListComponent and ArtistAlbumListComponent components to be injected into the page, we do that by adding in another router-outlet directive in our Artist template like so:"
+          }
+        },
+        {
+          "type": "gallery",
+          "content": {
+            "title": "Galeria obrazow z dupeczkami",
+            "images": [
+              {
+                "url": "https://www.wykop.pl/cdn/c3201142/comment_gUPKVZh9BWqVXPhMsba0biTQ8Ug7Ihn2,w400.jpg",
+                "title": "fajna dupeczka 1"
+              },
+              {
+                "url": "https://www.wykop.pl/cdn/c3201142/comment_gUPKVZh9BWqVXPhMsba0biTQ8Ug7Ihn2,w400.jpg",
+                "title": "fajna dupeczka 2"
+              },
+              {
+                "url": "https://www.wykop.pl/cdn/c3201142/comment_gUPKVZh9BWqVXPhMsba0biTQ8Ug7Ihn2,w400.jpg",
+                "title": "fajna dupeczka 3"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
