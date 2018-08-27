@@ -1,5 +1,6 @@
-{
-  "yoga": {
+[
+   {
+    "name": "yoga",
     "label": "Yoga dla opornych",
     "sections": [
       {
@@ -106,7 +107,8 @@
       }
     ]
   },
-  "fitness": {
+   {
+    "name":"fitness",
     "label": "Fitness dla opornych",
     "sections": [
       {
@@ -213,4 +215,4 @@
       }
     ]
   }
-}
+]
