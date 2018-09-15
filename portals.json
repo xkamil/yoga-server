@@ -16,6 +16,18 @@
         "label": "zajecia",
         "data": [
           {
+            "type": "list",
+            "content": {
+              "title": "Oferta obejmuje:",
+              "items":[
+                "pomiary i testy kinezjologiczne",
+                "analizę dziennika żywieniowego",
+                "ustalenie programu treningowego",
+                "asysta i wsparcie treningowe"
+              ]
+            }
+          },
+          {
             "type": "text",
             "styles": [
               "image_right",
