@@ -11,7 +11,11 @@ const portalSchema = new Schema(
         sections: [{type: Schema.Types.ObjectId, ref: 'Section'}]
     },
     {
-        versionKey: false
+        versionKey: false,
+        timestamps: {
+            createdAt: 'created_at',
+            updatedAt: 'updated_at'
+        }
     }
 );
 

@@ -1,33 +1,26 @@
-const Portal = require("../model/portal");
+const Section = require("../model/section");
 const ApiError = require('../error').ApiError;
 const ApiErrorType = require('../error').ApiErrorType;
 const ObjectId = require('mongoose').Types.ObjectId;
 
-const portalService = {
+const sectionService = {
 
-    getAllPortals: () => {
+    getAllSections: () => {
         return new Promise((resolve, reject) => {
-            Portal.find()
-                .populate({
-                    path: 'sections',
-                    model: 'Section',
-                    populate: {
-                        path: 'data',
-                        model: 'ContentItem'
-                    }
-                })
+            Section.find()
+                .populate('data')
                 .then(resolve)
                 .catch(err => reject(new ApiError(ApiErrorType.INTERNAL_ERROR, "", err)))
         });
     },
 
-    addPortal: (portalData) => {
+    addSection: (sectionData) => {
         return new Promise((resolve, reject) => {
-            new Portal(portalData).save()
+            new Section(sectionData).save()
                 .then(resolve)
                 .catch(err => {
                         if (err.name === 'MongoError' && err.code === 11000) {
-                            reject(new ApiError(ApiErrorType.RESOURCE_ALREADY_EXISTS, `Portal ${newPortal.name} already exists.`, err));
+                            reject(new ApiError(ApiErrorType.RESOURCE_ALREADY_EXISTS, `Section ${sectionData.name} already exists.`, err));
                         } else if (err.name === 'ValidationError') {
                             reject(new ApiError(ApiErrorType.VALIDATION_ERRORS, err.message, err));
                         } else {
@@ -38,15 +31,15 @@ const portalService = {
         });
     },
 
-    addSectionToPortal: (portalId, sectionId) => {
+    addContentItemToSection: (sectionId, contentItemId) => {
         return new Promise((resolve, reject) => {
-            if (!ObjectId.isValid(portalId) || !ObjectId.isValid(sectionId)) {
-                return reject(new ApiError(ApiErrorType.VALIDATION_ERRORS, 'Invalid portal_id or section_id', null));
+            if (!ObjectId.isValid(sectionId) || !ObjectId.isValid(contentItemId)) {
+                return reject(new ApiError(ApiErrorType.VALIDATION_ERRORS, 'Invalid section_id or contentItemId', null));
             }
-            Portal.findByIdAndUpdate(portalId, {$addToSet: {sections: sectionId}})
+            Section.findByIdAndUpdate(sectionId, {$addToSet: {data: contentItemId}})
                 .then(portal => {
                     if (!portal) {
-                        reject(new ApiError(ApiErrorType.RESOURCE_NOT_FOND, `Portal ${portalId} not found.`, null));
+                        reject(new ApiError(ApiErrorType.RESOURCE_NOT_FOND, `Section ${sectionId} not found.`, null));
                     } else {
                         resolve();
                     }
@@ -55,15 +48,15 @@ const portalService = {
         })
     },
 
-    removeSectionFromPortal: (portalId, sectionId) => {
+    removeContentItemFromSection: (sectionId, contentItemId) => {
         return new Promise((resolve, reject) => {
-            if (!ObjectId.isValid(portalId) || !ObjectId.isValid(sectionId)) {
+            if (!ObjectId.isValid(contentItemId) || !ObjectId.isValid(sectionId)) {
                 return reject(new ApiError(ApiErrorType.VALIDATION_ERRORS, 'Invalid portal_id or section_id', null));
             }
-            Portal.findByIdAndUpdate(portalId, {$pullAll: {sections: [sectionId]}})
+            Section.findByIdAndUpdate(sectionId, {$pullAll: {data: [contentItemId]}})
                 .then(portal => {
                     if (!portal) {
-                        reject(new ApiError(ApiErrorType.RESOURCE_NOT_FOND, `Portal ${portalId} not found.`, null));
+                        reject(new ApiError(ApiErrorType.RESOURCE_NOT_FOND, `Section ${sectionId} not found.`, null));
                     } else {
                         resolve();
                     }
@@ -73,4 +66,4 @@ const portalService = {
     },
 };
 
-module.exports = portalService;
+module.exports = sectionService;

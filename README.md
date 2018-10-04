@@ -15,7 +15,7 @@ DB_PASSWORD
 
 * Routes
 
-```java
+```
     GET /api/portals
         HTTP_200 - list of portals
         
@@ -40,8 +40,18 @@ DB_PASSWORD
         HTTP_400 - validation errors
         HTTP_409 - section with 'name' already exists
         
-    DELETE /api/sections/:sectionId
-        HTTP_200 - section_removed
-        HTTP_404 - section does not exist         
-           
+    POST /api/sections/:sectionId/content_items/:content_item_id
+        HTTP_200 - content item added to section
+        HTTP_404 - section does not exists       
+        
+    DELETE /api/sections/:sectionId/content_items/:content_item_id
+        HTTP_200 - content item removed from section
+        HTTP_404 - section does not exists          
+        
+    POST /api/content_items
+        HTTP_201 - content item created succesfully
+        HTTP_400 - validation errors
+
+    GET /api/content_items
+        HTTP_200 - list of content items        
 ```

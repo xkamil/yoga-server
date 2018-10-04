@@ -1,4 +1,6 @@
 const portalService = require("./service/portalService");
+const sectionService = require("./service/sectionService");
+const contentItemService = require("./service/contentItemService");
 const ApiError = require('./error').ApiError;
 const express = require('express');
 const app = express();
@@ -18,7 +20,7 @@ const configuration = require(`./configuration/${env}.json`);
 
 mongoose.connect(parseDBurl(configuration.database_url), {useNewUrlParser: true});
 
-// ROUTES =============================================================================
+// ROUTES
 const router = express.Router();
 
 router.get('/health', function (req, res) {
@@ -28,10 +30,12 @@ router.get('/health', function (req, res) {
     });
 });
 
-//mlabkarma321 user1
+
+// PORTAL ////////////////////////////////////////////////
+
 // add portal
 router.post('/portals', (req, res, next) => {
-    let portalData = req.body;
+    const portalData = req.body;
 
     portalService.addPortal(portalData)
         .then(portal => res.status(201).json(portal))
@@ -65,33 +69,63 @@ router.get('/portals', (req, res, next) => {
         .catch(err => next(err));
 });
 
-// section
-const Section = require('./model/section');
+// SECTION ////////////////////////////////////////////////
 
+// add section
 router.post('/sections', (req, res, next) => {
-    let sectionData = req.body;
+    const sectionData = req.body;
 
-    const newSection = new Section(sectionData);
-    const validationErrors = newSection.validateSync();
-
-    if (validationErrors) {
-        res.status(400).json(validationErrors.errors);
-    } else {
-        new Section(sectionData).save()
-            .then(section => res.status(201).json(section))
-            .catch(err => next(err));
-    }
+    sectionService.addSection(sectionData)
+        .then(section => res.status(201).json(section))
+        .catch(err => next(err));
 });
 
+// list of sections
 router.get('/sections', (req, res, next) => {
-    Section.find()
-        .populate('portals')
+    sectionService.getAllSections()
         .then(sections => res.json(sections))
-        .catch(err => next(err))
+        .catch(err => next(err));
 });
 
+// add content item to section
+router.post('/sections/:section_id/content_items/:content_item_id', (req, res, next) => {
+    const contentItemId = req.params.content_item_id;
+    const sectionId = req.params.section_id;
 
-// error handler
+    sectionService.addContentItemToSection(sectionId, contentItemId)
+        .then(() => res.json(''))
+        .catch(next);
+});
+
+// remove content item from section
+router.delete('/sections/:section_id/content_items/:content_item_id', (req, res, next) => {
+    const contentItemId = req.params.content_item_id;
+    const sectionId = req.params.section_id;
+
+    sectionService.removeContentItemFromSection(sectionId, contentItemId)
+        .then(() => res.json(''))
+        .catch(next);
+});
+
+// CONTENT ITEM /////////////////////////////////////////////
+
+// add content item
+router.post('/content_items', (req, res, next) => {
+    const contentItemData = req.body;
+
+    contentItemService.addContentItem(contentItemData)
+        .then(contentItem => res.status(201).json(contentItem))
+        .catch(err => next(err));
+});
+
+// list of content items
+router.get('/content_items', (req, res, next) => {
+    contentItemService.getAllContentItems()
+        .then(contentItems => res.json(contentItems))
+        .catch(err => next(err));
+});
+
+// ERROR HANDLER //////////////////////////////////////////
 
 router.use((err, req, res, next) => {
     if (err instanceof ApiError) {
