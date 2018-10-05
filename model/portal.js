@@ -5,8 +5,9 @@ const portalSchema = new Schema(
     {
         name: {type: String, required: true, unique: true},
         label: {type: String, required: true},
-        logo: {type: String, required: false, default: null},
-        style: {type: Object, required: false, default: {}},
+        logo: {type: String,  default: null},
+        images_top: {type: Array, default: []},
+        style: {type: Object,  default: {}},
         active: {type: Boolean, default: true},
         sections: [{type: Schema.Types.ObjectId, ref: 'Section'}]
     },
