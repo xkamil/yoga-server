@@ -31,6 +31,14 @@ const sectionService = {
         });
     },
 
+    deleteSection: (sectionId) => { //TODO remove section ref from portal
+        return new Promise((resolve, reject) => {
+            Section.deleteOne({_id: sectionId})
+                .then(resolve)
+                .catch(err => reject(new ApiError(ApiErrorType.INTERNAL_ERROR, null, err)));
+        });
+    },
+
     addContentItemToSection: (sectionId, contentItemId) => {
         return new Promise((resolve, reject) => {
             if (!ObjectId.isValid(sectionId) || !ObjectId.isValid(contentItemId)) {

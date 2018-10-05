@@ -42,6 +42,15 @@ router.post('/portals', (req, res, next) => {
         .catch(err => next(err));
 });
 
+// delete portal
+router.delete('/portals/:id', (req, res, next) => {
+    const portalId = req.params.id;
+
+    portalService.deletePortal(portalId)
+        .then(portal => res.status(200).json('Portal deleted'))
+        .catch(err => next(err));
+});
+
 // add section to portal
 router.post('/portals/:portal_id/sections/:section_id', (req, res, next) => {
     const portalId = req.params.portal_id;
@@ -87,6 +96,15 @@ router.get('/sections', (req, res, next) => {
         .catch(err => next(err));
 });
 
+// delete section
+router.delete('/sections/:id', (req, res, next) => {
+    const sectionId = req.params.id;
+
+    sectionService.deleteSection(sectionId)
+        .then(portal => res.status(200).json('Section deleted'))
+        .catch(err => next(err));
+});
+
 // add content item to section
 router.post('/sections/:section_id/content_items/:content_item_id', (req, res, next) => {
     const contentItemId = req.params.content_item_id;
@@ -122,6 +140,15 @@ router.post('/content_items', (req, res, next) => {
 router.get('/content_items', (req, res, next) => {
     contentItemService.getAllContentItems()
         .then(contentItems => res.json(contentItems))
+        .catch(err => next(err));
+});
+
+// delete content item
+router.delete('/content_items/:id', (req, res, next) => {
+    const contentItemId = req.params.id;
+
+    contentItemService.deleteContentItem(contentItemId)
+        .then(portal => res.status(200).json('Content item deleted'))
         .catch(err => next(err));
 });
 

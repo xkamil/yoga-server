@@ -24,6 +24,9 @@ DB_PASSWORD
         HTTP_400 - validation errors
         HTTP_409 - portal with 'name' already exists
         
+    DELETE /api/portals/:portal_id
+        HTTP_200 - portal deleted    
+        
     POST /api/portals/:portalId/sections/:sectionId
         HTTP_200 - section added to portal
         HTTP_404 - portal does not exists 
@@ -39,6 +42,9 @@ DB_PASSWORD
         HTTP_201 - section created succesfully
         HTTP_400 - validation errors
         HTTP_409 - section with 'name' already exists
+     
+    DELETE /api/sections/:section_id
+        HTTP_200 - section deleted       
         
     POST /api/sections/:sectionId/content_items/:content_item_id
         HTTP_200 - content item added to section
@@ -53,5 +59,8 @@ DB_PASSWORD
         HTTP_400 - validation errors
 
     GET /api/content_items
-        HTTP_200 - list of content items        
+        HTTP_200 - list of content items
+        
+    DELETE /api/content_items/:content_item_id
+        HTTP_200 - content item deleted                  
 ```

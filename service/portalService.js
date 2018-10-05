@@ -38,6 +38,14 @@ const portalService = {
         });
     },
 
+    deletePortal: (portalId) => {
+        return new Promise((resolve, reject) => {
+            Portal.deleteOne({_id: portalId})
+                .then(resolve)
+                .catch(err => reject(new ApiError(ApiErrorType.INTERNAL_ERROR, null, err)));
+        });
+    },
+
     addSectionToPortal: (portalId, sectionId) => {
         return new Promise((resolve, reject) => {
             if (!ObjectId.isValid(portalId) || !ObjectId.isValid(sectionId)) {

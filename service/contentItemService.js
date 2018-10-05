@@ -25,7 +25,15 @@ const contentItemService = {
                     }
                 )
         });
-    }
+    },
+
+    deleteContentItem: (contentItemId) => { //TODO remove ref from sections
+        return new Promise((resolve, reject) => {
+            ContentItem.deleteOne({_id: contentItemId})
+                .then(resolve)
+                .catch(err => reject(new ApiError(ApiErrorType.INTERNAL_ERROR, null, err)));
+        });
+    },
 };
 
 module.exports = contentItemService;
