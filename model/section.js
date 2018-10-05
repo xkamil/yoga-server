@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Portal = require('./portal');
 
 const sectionSchema = new Schema(
     {
@@ -16,5 +17,13 @@ const sectionSchema = new Schema(
         }
     }
 );
+
+sectionSchema.pre('remove', function (next) {
+    const section = this;
+
+    Portal.updateMany({}, {$pullAll: {sections: [section._id]}})
+        .then(() => next())
+        .catch(err => console.log(JSON.stringify(err)));
+});
 
 module.exports = mongoose.model('Section', sectionSchema);

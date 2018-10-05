@@ -27,9 +27,14 @@ const contentItemService = {
         });
     },
 
-    deleteContentItem: (contentItemId) => { //TODO remove ref from sections
+    deleteContentItem: (contentItemId) => {
         return new Promise((resolve, reject) => {
-            ContentItem.deleteOne({_id: contentItemId})
+            ContentItem.findOne({_id: contentItemId})
+                .then(contentItem=>{
+                    if(contentItem){
+                        return contentItem.remove();
+                    }
+                })
                 .then(resolve)
                 .catch(err => reject(new ApiError(ApiErrorType.INTERNAL_ERROR, null, err)));
         });

@@ -31,9 +31,14 @@ const sectionService = {
         });
     },
 
-    deleteSection: (sectionId) => { //TODO remove section ref from portal
+    deleteSection: (sectionId) => {
         return new Promise((resolve, reject) => {
-            Section.deleteOne({_id: sectionId})
+            Section.findOne({_id: sectionId})
+                .then(section=>{
+                    if(section){
+                        return section.remove();
+                    }
+                })
                 .then(resolve)
                 .catch(err => reject(new ApiError(ApiErrorType.INTERNAL_ERROR, null, err)));
         });

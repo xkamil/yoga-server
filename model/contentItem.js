@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Section = require('./section');
 
 const contentItemSchema = new Schema(
     {
@@ -15,5 +16,13 @@ const contentItemSchema = new Schema(
         }
     }
 );
+
+contentItemSchema.pre('remove', function (next) {
+    const contentItem = this;
+
+    Section.updateMany({}, {$pullAll: {data: [contentItem._id]}})
+        .then(() => next())
+        .catch(err => console.log(JSON.stringify(err)));
+});
 
 module.exports = mongoose.model('ContentItem', contentItemSchema);
