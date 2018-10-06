@@ -2,10 +2,11 @@ const Portal = require("../model/portal");
 const ApiError = require('../error').ApiError;
 const ApiErrorType = require('../error').ApiErrorType;
 const ObjectId = require('mongoose').Types.ObjectId;
+const logger = require('../utils').getLogger();
 
 const portalService = {
 
-    getAllPortals: () => {
+    getAll: () => {
         return new Promise((resolve, reject) => {
             Portal.find()
                 .populate({
@@ -21,7 +22,7 @@ const portalService = {
         });
     },
 
-    addPortal: (portalData) => {
+    add: (portalData) => {
         return new Promise((resolve, reject) => {
             new Portal(portalData).save()
                 .then(resolve)
@@ -38,7 +39,7 @@ const portalService = {
         });
     },
 
-    deletePortal: (portalId) => {
+    remove: (portalId) => {
         return new Promise((resolve, reject) => {
             Portal.deleteOne({_id: portalId})
                 .then(resolve)
@@ -46,7 +47,17 @@ const portalService = {
         });
     },
 
-    addSectionToPortal: (portalId, sectionId) => {
+    update: (id, portalData) => {
+        const {logo, images_top, active, sections, name, label, style} = portalData;
+        return new Promise((resolve, reject) => {
+            logger.debug(`Portal section ${id} with data: `, portalData);
+            Portal.findByIdAndUpdate(id, {logo, images_top, active, sections, name, label, style})
+                .then(resolve)
+                .catch(err => reject(new ApiError(ApiErrorType.INTERNAL_ERROR, null, err)));
+        });
+    },
+
+    addSection: (portalId, sectionId) => {
         return new Promise((resolve, reject) => {
             if (!ObjectId.isValid(portalId) || !ObjectId.isValid(sectionId)) {
                 return reject(new ApiError(ApiErrorType.VALIDATION_ERRORS, 'Invalid portal_id or section_id', null));
@@ -63,7 +74,7 @@ const portalService = {
         })
     },
 
-    removeSectionFromPortal: (portalId, sectionId) => {
+    removeSection: (portalId, sectionId) => {
         return new Promise((resolve, reject) => {
             if (!ObjectId.isValid(portalId) || !ObjectId.isValid(sectionId)) {
                 return reject(new ApiError(ApiErrorType.VALIDATION_ERRORS, 'Invalid portal_id or section_id', null));

@@ -2,10 +2,11 @@ const Section = require("../model/section");
 const ApiError = require('../error').ApiError;
 const ApiErrorType = require('../error').ApiErrorType;
 const ObjectId = require('mongoose').Types.ObjectId;
+const logger = require('../utils').getLogger();
 
 const sectionService = {
 
-    getAllSections: () => {
+    getAll: () => {
         return new Promise((resolve, reject) => {
             Section.find()
                 .populate('data')
@@ -14,7 +15,7 @@ const sectionService = {
         });
     },
 
-    addSection: (sectionData) => {
+    add: (sectionData) => {
         return new Promise((resolve, reject) => {
             new Section(sectionData).save()
                 .then(resolve)
@@ -31,7 +32,7 @@ const sectionService = {
         });
     },
 
-    deleteSection: (sectionId) => {
+    remove: (sectionId) => {
         return new Promise((resolve, reject) => {
             Section.findOne({_id: sectionId})
                 .then(section=>{
@@ -44,7 +45,17 @@ const sectionService = {
         });
     },
 
-    addContentItemToSection: (sectionId, contentItemId) => {
+    update: (id, sectionData) => {
+        const {active, data, name, label, styles} = sectionData;
+        return new Promise((resolve, reject) => {
+            logger.debug(`Updating section ${id} with: styles: `, styles, ', data: ', data);
+            Section.findByIdAndUpdate(id, {active, data, name, label, styles})
+                .then(resolve)
+                .catch(err => reject(new ApiError(ApiErrorType.INTERNAL_ERROR, null, err)));
+        });
+    },
+
+    addContentItem: (sectionId, contentItemId) => {
         return new Promise((resolve, reject) => {
             if (!ObjectId.isValid(sectionId) || !ObjectId.isValid(contentItemId)) {
                 return reject(new ApiError(ApiErrorType.VALIDATION_ERRORS, 'Invalid section_id or contentItemId', null));
@@ -61,7 +72,7 @@ const sectionService = {
         })
     },
 
-    removeContentItemFromSection: (sectionId, contentItemId) => {
+    removeContentItem: (sectionId, contentItemId) => {
         return new Promise((resolve, reject) => {
             if (!ObjectId.isValid(contentItemId) || !ObjectId.isValid(sectionId)) {
                 return reject(new ApiError(ApiErrorType.VALIDATION_ERRORS, 'Invalid portal_id or section_id', null));
