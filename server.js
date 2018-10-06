@@ -19,7 +19,7 @@ app.use(compression());
 const port = process.env.PORT || 8080;
 const configuration = Utils.getConfiguration();
 
-Utils.getLogger().info(Utils.getParsedDbUrl())
+Utils.getLogger().info(Utils.getParsedDbUrl());
 
 mongoose.connect(Utils.getParsedDbUrl(), {useNewUrlParser: true});
 

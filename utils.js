@@ -10,7 +10,7 @@ function getConfiguration() {
 
 function getParsedDbUrl() {
     if (getConfiguration().database_url.indexOf('<dbuser>') !== -1) {
-        let databaseUrl = '';
+        let databaseUrl = getConfiguration().database_url;
         databaseUrl = databaseUrl.replace('<dbuser>', process.env.DB_USER);
         databaseUrl = databaseUrl.replace('<dbpassword>', process.env.DB_PASSWORD);
         return databaseUrl;
