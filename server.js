@@ -59,7 +59,7 @@ router.post('/portals/:portal_id/sections/:section_id', (req, res, next) => {
     const portalId = req.params.portal_id;
     const sectionId = req.params.section_id;
 
-    portalService.add(portalId, sectionId)
+    portalService.addSection(portalId, sectionId)
         .then(() => res.json(''))
         .catch(next);
 });
