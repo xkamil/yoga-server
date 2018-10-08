@@ -10,6 +10,7 @@ const compression = require('compression');
 const mongoose = require('mongoose');
 const Utils = require('./utils');
 const logger = Utils.getLogger();
+const cacheMid = require('./middleware/cache');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -33,6 +34,7 @@ router.get('/health', function (req, res) {
     });
 });
 
+router.use(cacheMid);
 
 // PORTAL ////////////////////////////////////////////////
 
@@ -114,7 +116,7 @@ router.delete('/sections/:id', (req, res, next) => {
     const sectionId = req.params.id;
 
     sectionService.remove(sectionId)
-        .then(portal => res.status(200).json('Section deleted'))
+        .then(() => res.json('Section deleted'))
         .catch(err => next(err));
 });
 
@@ -124,7 +126,7 @@ router.post('/sections/:id', (req, res, next) => {
     const sectionData = req.body;
 
     sectionService.update(id, sectionData)
-        .then(portal => res.status(200).json('Section updated'))
+        .then(() => res.json('Section updated'))
         .catch(err => next(err));
 });
 

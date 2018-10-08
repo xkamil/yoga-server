@@ -48,10 +48,10 @@ const sectionService = {
     update: (id, sectionData) => {
         const {active, data, name, label, styles} = sectionData;
         return new Promise((resolve, reject) => {
-            logger.debug(`Updating section ${id} with: styles: `, styles, ', data: ', data);
+            logger.debug(`Updating section ${id} with: styles: \n`, JSON.stringify(sectionData, null, 3));
             Section.findByIdAndUpdate(id, {active, data, name, label, styles})
                 .then(resolve)
-                .catch(err => reject(new ApiError(ApiErrorType.INTERNAL_ERROR, null, err)));
+                .catch(err => {reject(new ApiError(ApiErrorType.INTERNAL_ERROR, null, err)) ;logger.error('error!!')});
         });
     },
 

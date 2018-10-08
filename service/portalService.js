@@ -28,7 +28,7 @@ const portalService = {
                 .then(resolve)
                 .catch(err => {
                         if (err.name === 'MongoError' && err.code === 11000) {
-                            reject(new ApiError(ApiErrorType.RESOURCE_ALREADY_EXISTS, `Portal ${newPortal.name} already exists.`, err));
+                            reject(new ApiError(ApiErrorType.RESOURCE_ALREADY_EXISTS, `Portal ${portalData.name} already exists.`, err));
                         } else if (err.name === 'ValidationError') {
                             reject(new ApiError(ApiErrorType.VALIDATION_ERRORS, err.message, err));
                         } else {
