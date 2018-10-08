@@ -20,8 +20,8 @@ function cacheMid(req, res, next) {
     logger.debug(`${req.method} ${req.path}`);
 
     if (req.method !== 'GET') {
-        cache[req.path] = null;
-        logger.debug(`Clearing cache for ${req.path}`);
+        this.cache = {};
+        logger.debug(`Clearing cache`);
         next();
     } else if (cache[req.path]) {
         logger.debug(`Sending response from cache`);
