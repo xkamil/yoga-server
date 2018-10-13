@@ -16,6 +16,8 @@ DB_PASSWORD
 * Routes
 
 ```
+    // PORTALS
+
     GET /api/portals
         HTTP_200 - list of portals
         
@@ -30,13 +32,7 @@ DB_PASSWORD
     DELETE /api/portals/:portal_id
         HTTP_200 - portal deleted    
         
-    POST /api/portals/:portalId/sections/:sectionId
-        HTTP_200 - section added to portal
-        HTTP_404 - portal does not exists 
-        
-    DELETE /api/portals/:portalId/sections/:sectionId
-        HTTP_200 - section removed from portal  
-        HTTP_404 - portal does not exists        
+    // SECTIONS      
         
     GET /api/sections
         HTTP_200 - list of sections    
@@ -52,23 +48,17 @@ DB_PASSWORD
     DELETE /api/sections/:section_id
         HTTP_200 - section deleted       
         
-    POST /api/sections/:sectionId/content_items/:content_item_id
-        HTTP_200 - content item added to section
-        HTTP_404 - section does not exists       
-        
-    DELETE /api/sections/:sectionId/content_items/:content_item_id
-        HTTP_200 - content item removed from section
-        HTTP_404 - section does not exists          
-        
+    // CONTENT ITEMS  
+              
+    GET /api/content_items
+        HTTP_200 - list of content items              
+              
     POST /api/content_items
         HTTP_201 - content item created succesfully
         HTTP_400 - validation errors
 
     POST /api/content_items/:content_item_id
         HTTP_200 - content item updated
-
-    GET /api/content_items
-        HTTP_200 - list of content items
         
     DELETE /api/content_items/:content_item_id
         HTTP_200 - content item deleted                  

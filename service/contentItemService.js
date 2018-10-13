@@ -1,6 +1,5 @@
 const ContentItem = require("../model/contentItem");
-const ApiError = require('../error').ApiError;
-const ApiErrorType = require('../error').ApiErrorType;
+const resolveErrorType = require('../error').resolveErrorType;
 const logger = require('../utils').getLogger();
 const contentItemService = {
 
@@ -8,7 +7,7 @@ const contentItemService = {
         return new Promise((resolve, reject) => {
             ContentItem.find()
                 .then(resolve)
-                .catch(err => reject(new ApiError(ApiErrorType.INTERNAL_ERROR, "", err)))
+                .catch(err => reject(err))
         });
     },
 
@@ -17,14 +16,7 @@ const contentItemService = {
             logger.debug(`Adding content item: `, contentItemData);
             new ContentItem(contentItemData).save()
                 .then(resolve)
-                .catch(err => {
-                        if (err.name === 'ValidationError') {
-                            reject(new ApiError(ApiErrorType.VALIDATION_ERRORS, err.message, err));
-                        } else {
-                            reject(new ApiError(ApiErrorType.INTERNAL_ERROR, null, err));
-                        }
-                    }
-                )
+                .catch(err => reject(resolveErrorType(err)))
         });
     },
 
@@ -33,32 +25,24 @@ const contentItemService = {
             ContentItem.findOne({_id: contentItemId})
                 .then(contentItem => {
                     if (contentItem) {
-                        logger.debug(`Removing content item ${id}`);
+                        logger.debug(`Removing content item \n ${JSON.stringify(contentItem, null, 2)}`);
                         return contentItem.remove();
                     }
                 })
                 .then(resolve)
-                .catch(err => reject(new ApiError(ApiErrorType.INTERNAL_ERROR, null, err)));
+                .catch(err => reject(err));
         });
     },
 
     update: (id, contentItemData) => {
-        const styles = contentItemData ? contentItemData.styles || {} : {};
-        const content = contentItemData ? contentItemData.content || {} : {};
+        const {styles, content} = contentItemData;
 
         return new Promise((resolve, reject) => {
-            logger.debug(`Updating content item ${id} with: styles: `, styles, ', data: ', content);
+            logger.debug(`Updating content item ${id} with:\n ${JSON.stringify(contentItemData, null, 2)} `);
 
             ContentItem.findByIdAndUpdate(id, {styles, content}, {runValidators: true})
                 .then(resolve)
-                .catch(err => {
-                        if (err.name === 'ValidationError') {
-                            reject(new ApiError(ApiErrorType.VALIDATION_ERRORS, err.message, err));
-                        } else {
-                            reject(new ApiError(ApiErrorType.INTERNAL_ERROR, null, err));
-                        }
-                    }
-                )
+                .catch(err => reject(resolveErrorType(err)))
         });
     }
 };

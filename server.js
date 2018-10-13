@@ -20,8 +20,6 @@ app.use(compression());
 const port = process.env.PORT || 8080;
 const configuration = Utils.getConfiguration();
 
-Utils.getLogger().info(Utils.getParsedDbUrl());
-
 mongoose.connect(Utils.getParsedDbUrl(), {useNewUrlParser: true});
 
 // ROUTES
@@ -56,16 +54,6 @@ router.delete('/portals/:id', (req, res, next) => {
         .catch(err => next(err));
 });
 
-// add section to portal
-router.post('/portals/:portal_id/sections/:section_id', (req, res, next) => {
-    const portalId = req.params.portal_id;
-    const sectionId = req.params.section_id;
-
-    portalService.addSection(portalId, sectionId)
-        .then(() => res.json(''))
-        .catch(next);
-});
-
 // update portal
 router.post('/portals/:id', (req, res, next) => {
     const id = req.params.id;
@@ -74,16 +62,6 @@ router.post('/portals/:id', (req, res, next) => {
     portalService.update(id, portalData)
         .then(portal => res.status(200).json('Portal updated'))
         .catch(err => next(err));
-});
-
-// remove section from portal
-router.delete('/portals/:portal_id/sections/:section_id', (req, res, next) => {
-    const portalId = req.params.portal_id;
-    const sectionId = req.params.section_id;
-
-    portalService.removeSection(portalId, sectionId)
-        .then(() => res.json(''))
-        .catch(next);
 });
 
 // list of portals
@@ -128,26 +106,6 @@ router.post('/sections/:id', (req, res, next) => {
     sectionService.update(id, sectionData)
         .then(() => res.json('Section updated'))
         .catch(err => next(err));
-});
-
-// add content item to section
-router.post('/sections/:section_id/content_items/:content_item_id', (req, res, next) => {
-    const contentItemId = req.params.content_item_id;
-    const sectionId = req.params.section_id;
-
-    sectionService.addContentItem(sectionId, contentItemId)
-        .then(() => res.json(''))
-        .catch(next);
-});
-
-// remove content item from section
-router.delete('/sections/:section_id/content_items/:content_item_id', (req, res, next) => {
-    const contentItemId = req.params.content_item_id;
-    const sectionId = req.params.section_id;
-
-    sectionService.removeContentItem(sectionId, contentItemId)
-        .then(() => res.json(''))
-        .catch(next);
 });
 
 // CONTENT ITEM /////////////////////////////////////////////

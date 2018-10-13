@@ -1,7 +1,5 @@
 const Section = require("../model/section");
-const ApiError = require('../error').ApiError;
-const ApiErrorType = require('../error').ApiErrorType;
-const ObjectId = require('mongoose').Types.ObjectId;
+const resolveErrorType = require('../error').resolveErrorType;
 const logger = require('../utils').getLogger();
 
 const sectionService = {
@@ -11,7 +9,7 @@ const sectionService = {
             Section.find()
                 .populate('data')
                 .then(resolve)
-                .catch(err => reject(new ApiError(ApiErrorType.INTERNAL_ERROR, "", err)))
+                .catch(err => reject(err))
         });
     },
 
@@ -19,16 +17,7 @@ const sectionService = {
         return new Promise((resolve, reject) => {
             new Section(sectionData).save()
                 .then(resolve)
-                .catch(err => {
-                        if (err.name === 'MongoError' && err.code === 11000) {
-                            reject(new ApiError(ApiErrorType.RESOURCE_ALREADY_EXISTS, `Section ${sectionData.name} already exists.`, err));
-                        } else if (err.name === 'ValidationError') {
-                            reject(new ApiError(ApiErrorType.VALIDATION_ERRORS, err.message, err));
-                        } else {
-                            reject(new ApiError(ApiErrorType.INTERNAL_ERROR, null, err));
-                        }
-                    }
-                )
+                .catch(err => reject(resolveErrorType(err)))
         });
     },
 
@@ -41,7 +30,7 @@ const sectionService = {
                     }
                 })
                 .then(resolve)
-                .catch(err => reject(new ApiError(ApiErrorType.INTERNAL_ERROR, null, err)));
+                .catch(err => reject(err));
         });
     },
 
@@ -51,43 +40,9 @@ const sectionService = {
             logger.debug(`Updating section ${id} with: styles: \n`, JSON.stringify(sectionData, null, 3));
             Section.findByIdAndUpdate(id, {active, data, name, label, styles})
                 .then(resolve)
-                .catch(err => {reject(new ApiError(ApiErrorType.INTERNAL_ERROR, null, err)) ;logger.error('error!!')});
+                .catch(err => err);
         });
-    },
-
-    addContentItem: (sectionId, contentItemId) => {
-        return new Promise((resolve, reject) => {
-            if (!ObjectId.isValid(sectionId) || !ObjectId.isValid(contentItemId)) {
-                return reject(new ApiError(ApiErrorType.VALIDATION_ERRORS, 'Invalid section_id or contentItemId', null));
-            }
-            Section.findByIdAndUpdate(sectionId, {$addToSet: {data: contentItemId}})
-                .then(portal => {
-                    if (!portal) {
-                        reject(new ApiError(ApiErrorType.RESOURCE_NOT_FOND, `Section ${sectionId} not found.`, null));
-                    } else {
-                        resolve();
-                    }
-                })
-                .catch(err => reject(new ApiError(ApiErrorType.INTERNAL_ERROR, err.message, err)));
-        })
-    },
-
-    removeContentItem: (sectionId, contentItemId) => {
-        return new Promise((resolve, reject) => {
-            if (!ObjectId.isValid(contentItemId) || !ObjectId.isValid(sectionId)) {
-                return reject(new ApiError(ApiErrorType.VALIDATION_ERRORS, 'Invalid portal_id or section_id', null));
-            }
-            Section.findByIdAndUpdate(sectionId, {$pullAll: {data: [contentItemId]}})
-                .then(portal => {
-                    if (!portal) {
-                        reject(new ApiError(ApiErrorType.RESOURCE_NOT_FOND, `Section ${sectionId} not found.`, null));
-                    } else {
-                        resolve();
-                    }
-                })
-                .catch(err => reject(new ApiError(ApiErrorType.INTERNAL_ERROR, err.message, err)));
-        })
-    },
+    }
 };
 
 module.exports = sectionService;

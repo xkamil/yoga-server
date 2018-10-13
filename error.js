@@ -24,7 +24,19 @@ function ApiError(type, message, extra) {
     return this;
 }
 
+function resolveErrorType(err) {
+    switch (err.name) {
+        case 'ValidationError' :
+            return new ApiError(ApiErrorType.VALIDATION_ERRORS, err.message, err);
+        case 'MongoError' :
+            return err.code === 11000 ? new ApiError(ApiErrorType.RESOURCE_ALREADY_EXISTS, err.message, err) : err;
+        default:
+            return err;
+    }
+}
+
 module.exports = {
     ApiErrorType,
-    ApiError
+    ApiError,
+    resolveErrorType
 };

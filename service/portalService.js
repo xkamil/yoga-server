@@ -1,7 +1,5 @@
 const Portal = require("../model/portal");
-const ApiError = require('../error').ApiError;
-const ApiErrorType = require('../error').ApiErrorType;
-const ObjectId = require('mongoose').Types.ObjectId;
+const resolveErrorType = require('../error').resolveErrorType;
 const logger = require('../utils').getLogger();
 
 const portalService = {
@@ -18,7 +16,7 @@ const portalService = {
                     }
                 })
                 .then(resolve)
-                .catch(err => reject(new ApiError(ApiErrorType.INTERNAL_ERROR, "", err)))
+                .catch(err => reject(err))
         });
     },
 
@@ -26,16 +24,7 @@ const portalService = {
         return new Promise((resolve, reject) => {
             new Portal(portalData).save()
                 .then(resolve)
-                .catch(err => {
-                        if (err.name === 'MongoError' && err.code === 11000) {
-                            reject(new ApiError(ApiErrorType.RESOURCE_ALREADY_EXISTS, `Portal ${portalData.name} already exists.`, err));
-                        } else if (err.name === 'ValidationError') {
-                            reject(new ApiError(ApiErrorType.VALIDATION_ERRORS, err.message, err));
-                        } else {
-                            reject(new ApiError(ApiErrorType.INTERNAL_ERROR, null, err));
-                        }
-                    }
-                )
+                .catch(err => reject(resolveErrorType(err)))
         });
     },
 
@@ -43,7 +32,7 @@ const portalService = {
         return new Promise((resolve, reject) => {
             Portal.deleteOne({_id: portalId})
                 .then(resolve)
-                .catch(err => reject(new ApiError(ApiErrorType.INTERNAL_ERROR, null, err)));
+                .catch(err => reject(err));
         });
     },
 
@@ -53,43 +42,9 @@ const portalService = {
             logger.debug(`Portal section ${id} with data: `, portalData);
             Portal.findByIdAndUpdate(id, {logo, images_top, active, sections, name, label, style})
                 .then(resolve)
-                .catch(err => reject(new ApiError(ApiErrorType.INTERNAL_ERROR, null, err)));
+                .catch(err => reject(err));
         });
-    },
-
-    addSection: (portalId, sectionId) => {
-        return new Promise((resolve, reject) => {
-            if (!ObjectId.isValid(portalId) || !ObjectId.isValid(sectionId)) {
-                return reject(new ApiError(ApiErrorType.VALIDATION_ERRORS, 'Invalid portal_id or section_id', null));
-            }
-            Portal.findByIdAndUpdate(portalId, {$addToSet: {sections: sectionId}})
-                .then(portal => {
-                    if (!portal) {
-                        reject(new ApiError(ApiErrorType.RESOURCE_NOT_FOND, `Portal ${portalId} not found.`, null));
-                    } else {
-                        resolve();
-                    }
-                })
-                .catch(err => reject(new ApiError(ApiErrorType.INTERNAL_ERROR, err.message, err)));
-        })
-    },
-
-    removeSection: (portalId, sectionId) => {
-        return new Promise((resolve, reject) => {
-            if (!ObjectId.isValid(portalId) || !ObjectId.isValid(sectionId)) {
-                return reject(new ApiError(ApiErrorType.VALIDATION_ERRORS, 'Invalid portal_id or section_id', null));
-            }
-            Portal.findByIdAndUpdate(portalId, {$pullAll: {sections: [sectionId]}})
-                .then(portal => {
-                    if (!portal) {
-                        reject(new ApiError(ApiErrorType.RESOURCE_NOT_FOND, `Portal ${portalId} not found.`, null));
-                    } else {
-                        resolve();
-                    }
-                })
-                .catch(err => reject(new ApiError(ApiErrorType.INTERNAL_ERROR, err.message, err)));
-        })
-    },
+    }
 };
 
 module.exports = portalService;
