@@ -1,5 +1,5 @@
 {
-  "database_url": "mongodb://<dbuser>:<dbpassword>@ds223253.mlab.com:23253/karma",
+  "database_url": "mongodb://<dbuser>:<dbpassword>@ds133533.mlab.com:33533/karma",
   "logging_level": "info",
   "email": {
     "title": "Mail wysłany z portalu Karma"
