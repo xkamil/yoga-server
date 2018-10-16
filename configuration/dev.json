@@ -1,7 +1,7 @@
 {
   "database_url": "mongodb://127.0.0.1:27017/karma1",
   "logging_level": "debug",
-  "eamil": {
+  "email": {
     "title": "Karma dev email title"
   }
 }
