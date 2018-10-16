@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
 const Utils = require('./utils');
 const logger = Utils.getLogger();
 const cacheMid = require('./middleware/cache');
+const EmailService = require('./service/emailService');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -50,7 +51,7 @@ router.delete('/portals/:id', (req, res, next) => {
     const portalId = req.params.id;
 
     portalService.remove(portalId)
-        .then(portal => res.status(200).json('Portal deleted'))
+        .then(portal => res.json('Portal deleted'))
         .catch(err => next(err));
 });
 
@@ -60,7 +61,7 @@ router.post('/portals/:id', (req, res, next) => {
     const portalData = req.body;
 
     portalService.update(id, portalData)
-        .then(portal => res.status(200).json('Portal updated'))
+        .then(portal => res.json('Portal updated'))
         .catch(err => next(err));
 });
 
@@ -131,7 +132,7 @@ router.delete('/content_items/:id', (req, res, next) => {
     const contentItemId = req.params.id;
 
     contentItemService.remove(contentItemId)
-        .then(portal => res.status(200).json('Content item deleted'))
+        .then(portal => res.json('Content item deleted'))
         .catch(err => next(err));
 });
 
@@ -141,7 +142,23 @@ router.post('/content_items/:id', (req, res, next) => {
     const contentItemData = req.body;
 
     contentItemService.update(id, contentItemData)
-        .then(portal => res.status(200).json('Content item updated'))
+        .then(portal => res.json('Content item updated'))
+        .catch(err => next(err));
+});
+
+
+// SENDING EMAIL //////////////////////////////////////////
+const mailUsername = process.env.MAIL_USER;
+const mailPassword = process.env.MAIL_PASSWORD;
+const emailService = new EmailService(mailUsername, mailPassword);
+
+router.post('/service/email', (req, res, next) => {
+    const to = req.body.to;
+    const message = req.body.message;
+    const title = req.body.title || configuration.email.title;
+
+    emailService.sendEmail(mailUsername, to, message, title)
+        .then(response => res.json(response))
         .catch(err => next(err));
 });
 

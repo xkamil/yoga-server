@@ -5,12 +5,14 @@
 npm start
 ```
 
-* Env variables
+* Required env variables
 
 ```
 ENV - [prod,dev]
 DB_USERNAME
 DB_PASSWORD
+MAIL_USER - for example jan.nowak@gmail.com
+MAIL_PASSWORD 
 ```
 
 * Routes
@@ -61,5 +63,12 @@ DB_PASSWORD
         HTTP_200 - content item updated
         
     DELETE /api/content_items/:content_item_id
-        HTTP_200 - content item deleted                  
+        HTTP_200 - content item deleted           
+        
+    // SERVICES
+    
+    POST /api/service/email
+        HTTP_200 - email sent
+        HTTP_400 - validation errors
+           
 ```
