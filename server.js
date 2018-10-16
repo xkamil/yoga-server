@@ -153,11 +153,11 @@ const mailPassword = process.env.MAIL_PASSWORD;
 const emailService = new EmailService(mailUsername, mailPassword);
 
 router.post('/service/email', (req, res, next) => {
-    const to = req.body.to;
+    const from = req.body.from;
     const message = req.body.message;
     const title = req.body.title || configuration.email.title;
 
-    emailService.sendEmail(mailUsername, to, message, title)
+    emailService.sendEmail(from, message, title)
         .then(response => res.json(response))
         .catch(err => next(err));
 });
