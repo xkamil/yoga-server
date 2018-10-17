@@ -37,10 +37,10 @@ const portalService = {
     },
 
     update: (id, portalData) => {
-        const {logo, images_top, active, sections, name, label, style} = portalData;
+        const {logo, images_top, active, sections, name, label, style, description} = portalData;
         return new Promise((resolve, reject) => {
             logger.debug(`Portal section ${id} with data: `, portalData);
-            Portal.findByIdAndUpdate(id, {logo, images_top, active, sections, name, label, style})
+            Portal.findByIdAndUpdate(id, {logo, images_top, active, sections, name, label, style, description})
                 .then(resolve)
                 .catch(err => reject(err));
         });

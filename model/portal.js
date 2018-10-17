@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const portalSchema = new Schema(
     {
         name: {type: String, required: true, unique: true},
-        description: {type: String, required: true},
+        description: {type: String, default: ""},
         label: {type: String, required: true},
         logo: {type: String,  default: null},
         images_top: {type: Array, default: []},
