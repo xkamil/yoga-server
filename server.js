@@ -150,6 +150,7 @@ router.post('/content_items/:id', (req, res, next) => {
 // SENDING EMAIL //////////////////////////////////////////
 const mailUsername = process.env.MAIL_USER;
 const mailPassword = process.env.MAIL_PASSWORD;
+const mailTo = process.env.MAIL_TO;
 const emailService = new EmailService(mailUsername, mailPassword);
 
 router.post('/service/email', (req, res, next) => {
@@ -157,7 +158,7 @@ router.post('/service/email', (req, res, next) => {
     const message = req.body.message;
     const title = req.body.title || configuration.email.title;
 
-    emailService.sendEmail(from, message, title)
+    emailService.sendEmail(from,mailTo, message, title)
         .then(response => res.json(response))
         .catch(err => next(err));
 });

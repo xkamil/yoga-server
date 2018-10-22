@@ -18,18 +18,16 @@ function EmailService(username, password) {
 
 }
 
-EmailService.prototype.sendEmail = function (from, message, title) {
+EmailService.prototype.sendEmail = function (from, to, message, title) {
     const validationErrors = this._validate(from, message);
 
     const mailOptions = {
-        to: [this.to],
+        to,
         from,
         subject: title,
         text: message,
         replyTo: from
     };
-
-    console.log(mailOptions);
 
     if (validationErrors.length > 0) {
         return Promise.reject(resolveErrorType({name: 'ValidationError', errors: validationErrors}));
@@ -48,11 +46,15 @@ EmailService.prototype.sendEmail = function (from, message, title) {
     }
 };
 
-EmailService.prototype._validate = function (from, message) {
+EmailService.prototype._validate = function (from, to,  message) {
     let errors = [];
 
     if (!this._validateEmail(from)) {
-        errors.push({field: 'from', message: 'Invalid receiver email.'})
+        errors.push({field: 'from', message: 'Invalid sender email.'})
+    }
+
+    if (!this._validateEmail(to)) {
+        errors.push({field: 'to', message: 'Invalid receiver email.'})
     }
 
     if (!this._validateMessage(message)) {
