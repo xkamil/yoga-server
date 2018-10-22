@@ -19,7 +19,7 @@ function EmailService(username, password) {
 }
 
 EmailService.prototype.sendEmail = function (from, to, message, title) {
-    const validationErrors = this._validate(from, message);
+    const validationErrors = this._validate(from, to, message);
 
     const mailOptions = {
         to,
@@ -46,7 +46,7 @@ EmailService.prototype.sendEmail = function (from, to, message, title) {
     }
 };
 
-EmailService.prototype._validate = function (from, to,  message) {
+EmailService.prototype._validate = function (from, to, message) {
     let errors = [];
 
     if (!this._validateEmail(from)) {
