@@ -11,8 +11,9 @@ npm start
 ENV - [prod,dev]
 DB_USERNAME
 DB_PASSWORD
-MAIL_USER - for example jan.nowak@gmail.com
+MAIL_USER - mail username (client for sending emails for example jan.nowak@gmail.com)
 MAIL_PASSWORD 
+MAIL_TO - email address where correspondation will be send
 ```
 
 * Routes
