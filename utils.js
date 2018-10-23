@@ -24,6 +24,16 @@ function getEnv() {
 
 function getLogger() {
     if(!this.configured){
+
+        log4js.configure({
+            appenders: {
+                everything: { type: 'file', filename: 'logs.log', maxLogSize: 1000000 }
+            },
+            categories: {
+                default: { appenders: [ 'everything' ], level: 'debug' }
+            }
+        });
+
         logger.level = getConfiguration().logging_level;
         this.configured = true;
     }

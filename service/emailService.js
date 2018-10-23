@@ -29,6 +29,8 @@ EmailService.prototype.sendEmail = function (from, to, message, title) {
         replyTo: from
     };
 
+    logger.info('mail options: \n', JSON.stringify(mailOptions, null, 2));
+
     if (validationErrors.length > 0) {
         return Promise.reject(resolveErrorType({name: 'ValidationError', errors: validationErrors}));
     } else {

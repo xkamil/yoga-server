@@ -70,5 +70,9 @@ MAIL_PASSWORD
     POST /api/service/email
         HTTP_200 - email sent
         HTTP_400 - validation errors
+        
+    // SERVER LOGS
+    
+    GET /api/logs    
            
 ```

@@ -2,6 +2,7 @@
   "database_url": "mongodb://<dbuser>:<dbpassword>@ds133533.mlab.com:33533/karma",
   "logging_level": "info",
   "email": {
-    "title": "Mail wysłany z portalu Karma"
+    "title": "Mail wysłany z portalu Karma",
+    "mail_to": "karmazdrowia@gmail.com"
   }
 }

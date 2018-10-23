@@ -12,6 +12,7 @@ const Utils = require('./utils');
 const logger = Utils.getLogger();
 const cacheMid = require('./middleware/cache');
 const EmailService = require('./service/emailService');
+const fs = require('fs');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -34,6 +35,10 @@ router.get('/health', function (req, res) {
 });
 
 router.use(cacheMid);
+router.use((req, res, next) => {
+    logger.info(`Handling ${req.method} ${req.path}`);
+    next();
+});
 
 // PORTAL ////////////////////////////////////////////////
 
@@ -148,21 +153,35 @@ router.post('/content_items/:id', (req, res, next) => {
 
 
 // SENDING EMAIL //////////////////////////////////////////
+
 const mailUsername = process.env.MAIL_USER;
 const mailPassword = process.env.MAIL_PASSWORD;
-const mailTo = process.env.MAIL_TO;
 const emailService = new EmailService(mailUsername, mailPassword);
 
 router.post('/service/email', (req, res, next) => {
     const from = req.body.from;
     const message = req.body.message;
     const title = req.body.title || configuration.email.title;
+    const to = configuration.email.mail_to;
 
-    emailService.sendEmail(from,mailTo, message, title)
+    logger.info(JSON.stringify(req.body, null, 2));
+
+    emailService.sendEmail(from, to, message, title)
         .then(response => res.json(response))
         .catch(err => next(err));
 });
 
+// LOGS ///////////////////////////////////////////////////
+
+router.get('/logs', (req, res, next) => {
+    fs.readFile('./logs.log', (err, data) => {
+        if (err) {
+            next(err);
+        } else {
+            res.send(data);
+        }
+    });
+});
 
 // ERROR HANDLER //////////////////////////////////////////
 
