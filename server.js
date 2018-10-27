@@ -13,6 +13,7 @@ const logger = Utils.getLogger();
 const cacheMid = require('./middleware/cache');
 const EmailService = require('./service/emailService');
 const fs = require('fs');
+const authMid = require('./middleware/auth');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -27,7 +28,7 @@ mongoose.connect(Utils.getParsedDbUrl(), {useNewUrlParser: true});
 // ROUTES
 const router = express.Router();
 
-router.get('/health', function (req, res) {
+router.get('/health', authMid(), function (req, res) {
     res.json({
         api: "UP",
         database: mongoose.connection.readyState === 1 ? "UP" : "DOWN"
@@ -43,7 +44,7 @@ router.use((req, res, next) => {
 // PORTAL ////////////////////////////////////////////////
 
 // add portal
-router.post('/portals', (req, res, next) => {
+router.post('/portals', authMid(), (req, res, next) => {
     const portalData = req.body;
 
     portalService.add(portalData)
@@ -52,7 +53,7 @@ router.post('/portals', (req, res, next) => {
 });
 
 // delete portal
-router.delete('/portals/:id', (req, res, next) => {
+router.delete('/portals/:id', authMid(), (req, res, next) => {
     const portalId = req.params.id;
 
     portalService.remove(portalId)
@@ -61,7 +62,7 @@ router.delete('/portals/:id', (req, res, next) => {
 });
 
 // update portal
-router.post('/portals/:id', (req, res, next) => {
+router.post('/portals/:id', authMid(), (req, res, next) => {
     const id = req.params.id;
     const portalData = req.body;
 
@@ -80,7 +81,7 @@ router.get('/portals', (req, res, next) => {
 // SECTION ////////////////////////////////////////////////
 
 // add section
-router.post('/sections', (req, res, next) => {
+router.post('/sections', authMid(), (req, res, next) => {
     const sectionData = req.body;
 
     sectionService.add(sectionData)
@@ -96,7 +97,7 @@ router.get('/sections', (req, res, next) => {
 });
 
 // delete section
-router.delete('/sections/:id', (req, res, next) => {
+router.delete('/sections/:id', authMid(), (req, res, next) => {
     const sectionId = req.params.id;
 
     sectionService.remove(sectionId)
@@ -105,7 +106,7 @@ router.delete('/sections/:id', (req, res, next) => {
 });
 
 // update section
-router.post('/sections/:id', (req, res, next) => {
+router.post('/sections/:id', authMid(), (req, res, next) => {
     const id = req.params.id;
     const sectionData = req.body;
 
@@ -117,7 +118,7 @@ router.post('/sections/:id', (req, res, next) => {
 // CONTENT ITEM /////////////////////////////////////////////
 
 // add content item
-router.post('/content_items', (req, res, next) => {
+router.post('/content_items', authMid(), (req, res, next) => {
     const contentItemData = req.body;
 
     contentItemService.add(contentItemData)
@@ -133,7 +134,7 @@ router.get('/content_items', (req, res, next) => {
 });
 
 // delete content item
-router.delete('/content_items/:id', (req, res, next) => {
+router.delete('/content_items/:id', authMid(), (req, res, next) => {
     const contentItemId = req.params.id;
 
     contentItemService.remove(contentItemId)
@@ -142,7 +143,7 @@ router.delete('/content_items/:id', (req, res, next) => {
 });
 
 // update content item
-router.post('/content_items/:id', (req, res, next) => {
+router.post('/content_items/:id', authMid(), (req, res, next) => {
     const id = req.params.id;
     const contentItemData = req.body;
 
@@ -173,7 +174,7 @@ router.post('/service/email', (req, res, next) => {
 
 // LOGS ///////////////////////////////////////////////////
 
-router.get('/logs', (req, res, next) => {
+router.get('/logs', authMid(), (req, res, next) => {
     fs.readFile('./logs.log', (err, data) => {
         if (err) {
             next(err);
