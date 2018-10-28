@@ -19,6 +19,8 @@ const sectionRouter = require('./routes/section');
 const contentItemRouter = require('./routes/contentItem');
 const authenticationRouter = require('./routes/authentication');
 
+logger.info('Environment configuration: \n' + JSON.stringify(ENV, null, 2));
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cors());
@@ -37,16 +39,10 @@ router.get('/health', authMid, function (req, res) {
     });
 });
 
-router.post('api/login', (req, res, next) => {
-
-});
-
-
 app.use('/api/portals', portalRouter);
 app.use('/api/sections', sectionRouter);
 app.use('/api/content_items', contentItemRouter);
 app.use('/api/auth', authenticationRouter);
-
 
 // SENDING EMAIL //////////////////////////////////////////
 
