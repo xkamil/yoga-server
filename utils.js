@@ -23,10 +23,12 @@ function getEnvVariables() {
 }
 
 function getParsedDbUrl() {
+    const ENV = getEnvVariables();
+
     if (getConfiguration().database_url.indexOf('<dbuser>') !== -1) {
         let databaseUrl = getConfiguration().database_url;
-        databaseUrl = databaseUrl.replace('<dbuser>', getEnvVariables.DB_USER);
-        databaseUrl = databaseUrl.replace('<dbpassword>', getEnvVariables.DB_PASSWORD);
+        databaseUrl = databaseUrl.replace('<dbuser>', ENV.DB_USER);
+        databaseUrl = databaseUrl.replace('<dbpassword>', ENV.DB_PASSWORD);
         return databaseUrl;
     }
     return getConfiguration().database_url;
