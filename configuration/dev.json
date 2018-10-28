@@ -4,5 +4,6 @@
   "email": {
     "title": "Karma dev email title",
     "mail_to": "ssjkamil@gmail.com"
-  }
+  },
+  "authentication_timeout": 36000
 }

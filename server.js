@@ -1,8 +1,6 @@
-const portalService = require("./service/portalService");
-const sectionService = require("./service/sectionService");
-const contentItemService = require("./service/contentItemService");
 const ApiError = require('./error').ApiError;
 const express = require('express');
+const router = express.Router();
 const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -10,154 +8,49 @@ const compression = require('compression');
 const mongoose = require('mongoose');
 const Utils = require('./utils');
 const logger = Utils.getLogger();
-const cacheMid = require('./middleware/cache');
 const EmailService = require('./service/emailService');
 const fs = require('fs');
-const authMid = require('./middleware/auth');
+const authMid = require('./middleware/authorization');
+const loggingMid = require('./middleware/logging');
+const ENV = require('./utils').getEnvVariables();
+const configuration = Utils.getConfiguration();
+const portalRouter = require('./routes/portal');
+const sectionRouter = require('./routes/section');
+const contentItemRouter = require('./routes/contentItem');
+const authenticationRouter = require('./routes/authentication');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cors());
 app.use(compression());
+app.use(loggingMid);
 
-const port = process.env.PORT || 8080;
-const configuration = Utils.getConfiguration();
 
 mongoose.connect(Utils.getParsedDbUrl(), {useNewUrlParser: true});
 
 // ROUTES
-const router = express.Router();
 
-router.get('/health', authMid(), function (req, res) {
+router.get('/health', authMid, function (req, res) {
     res.json({
         api: "UP",
         database: mongoose.connection.readyState === 1 ? "UP" : "DOWN"
     });
 });
 
-router.use(cacheMid);
-router.use((req, res, next) => {
-    logger.info(`Handling ${req.method} ${req.path}`);
-    next();
+router.post('api/login', (req, res, next) => {
+
 });
 
-// PORTAL ////////////////////////////////////////////////
 
-// add portal
-router.post('/portals', authMid(), (req, res, next) => {
-    const portalData = req.body;
-
-    portalService.add(portalData)
-        .then(portal => res.status(201).json(portal))
-        .catch(err => next(err));
-});
-
-// delete portal
-router.delete('/portals/:id', authMid(), (req, res, next) => {
-    const portalId = req.params.id;
-
-    portalService.remove(portalId)
-        .then(portal => res.json('Portal deleted'))
-        .catch(err => next(err));
-});
-
-// update portal
-router.post('/portals/:id', authMid(), (req, res, next) => {
-    const id = req.params.id;
-    const portalData = req.body;
-
-    portalService.update(id, portalData)
-        .then(portal => res.json('Portal updated'))
-        .catch(err => next(err));
-});
-
-// list of portals
-router.get('/portals', (req, res, next) => {
-    portalService.getAll()
-        .then(portals => res.json(portals))
-        .catch(err => next(err));
-});
-
-// SECTION ////////////////////////////////////////////////
-
-// add section
-router.post('/sections', authMid(), (req, res, next) => {
-    const sectionData = req.body;
-
-    sectionService.add(sectionData)
-        .then(section => res.status(201).json(section))
-        .catch(err => next(err));
-});
-
-// list of sections
-router.get('/sections', (req, res, next) => {
-    sectionService.getAll()
-        .then(sections => res.json(sections))
-        .catch(err => next(err));
-});
-
-// delete section
-router.delete('/sections/:id', authMid(), (req, res, next) => {
-    const sectionId = req.params.id;
-
-    sectionService.remove(sectionId)
-        .then(() => res.json('Section deleted'))
-        .catch(err => next(err));
-});
-
-// update section
-router.post('/sections/:id', authMid(), (req, res, next) => {
-    const id = req.params.id;
-    const sectionData = req.body;
-
-    sectionService.update(id, sectionData)
-        .then(() => res.json('Section updated'))
-        .catch(err => next(err));
-});
-
-// CONTENT ITEM /////////////////////////////////////////////
-
-// add content item
-router.post('/content_items', authMid(), (req, res, next) => {
-    const contentItemData = req.body;
-
-    contentItemService.add(contentItemData)
-        .then(contentItem => res.status(201).json(contentItem))
-        .catch(err => next(err));
-});
-
-// list of content items
-router.get('/content_items', (req, res, next) => {
-    contentItemService.getAll()
-        .then(contentItems => res.json(contentItems))
-        .catch(err => next(err));
-});
-
-// delete content item
-router.delete('/content_items/:id', authMid(), (req, res, next) => {
-    const contentItemId = req.params.id;
-
-    contentItemService.remove(contentItemId)
-        .then(portal => res.json('Content item deleted'))
-        .catch(err => next(err));
-});
-
-// update content item
-router.post('/content_items/:id', authMid(), (req, res, next) => {
-    const id = req.params.id;
-    const contentItemData = req.body;
-
-    contentItemService.update(id, contentItemData)
-        .then(portal => res.json('Content item updated'))
-        .catch(err => next(err));
-});
+app.use('/api/portals', portalRouter);
+app.use('/api/sections', sectionRouter);
+app.use('/api/content_items', contentItemRouter);
+app.use('/api/auth', authenticationRouter);
 
 
 // SENDING EMAIL //////////////////////////////////////////
 
-const mailUsername = process.env.MAIL_USER;
-const mailPassword = process.env.MAIL_PASSWORD;
-const emailService = new EmailService(mailUsername, mailPassword);
+const emailService = new EmailService(ENV.MAIL_USER, ENV.MAIL_PASSWORD);
 
 router.post('/service/email', (req, res, next) => {
     const from = req.body.from;
@@ -174,13 +67,9 @@ router.post('/service/email', (req, res, next) => {
 
 // LOGS ///////////////////////////////////////////////////
 
-router.get('/logs', authMid(), (req, res, next) => {
+router.get('/logs', authMid, (req, res, next) => {
     fs.readFile('./logs.log', (err, data) => {
-        if (err) {
-            next(err);
-        } else {
-            res.send(data);
-        }
+        err ? next(err) : res.send(data);
     });
 });
 
@@ -196,8 +85,8 @@ router.use((err, req, res, next) => {
 
 app.use('/api', router);
 
-app.listen(port, () => {
-    logger.info('Server port: ' + port);
-    logger.info("Environment: " + Utils.getEnv());
+app.listen(ENV.PORT, () => {
+    logger.info('Server port: ' + ENV.PORT);
+    logger.info("Environment: " + ENV.ENV);
     logger.info(`Database: ${configuration.database_url}`);
 });

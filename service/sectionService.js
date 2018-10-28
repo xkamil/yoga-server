@@ -13,6 +13,14 @@ const sectionService = {
         });
     },
 
+    get: (id) => {
+        return new Promise((resolve, reject) => {
+            Section.findById(id)
+                .then(resolve)
+                .catch(err => reject(err))
+        });
+    },
+
     add: (sectionData) => {
         return new Promise((resolve, reject) => {
             new Section(sectionData).save()

@@ -11,6 +11,14 @@ const contentItemService = {
         });
     },
 
+    get: (id) => {
+        return new Promise((resolve, reject) => {
+            ContentItem.findById(id)
+                .then(resolve)
+                .catch(err => reject(err))
+        });
+    },
+
     add: (contentItemData) => {
         return new Promise((resolve, reject) => {
             logger.debug(`Adding content item: `, contentItemData);

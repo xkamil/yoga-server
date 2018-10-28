@@ -4,5 +4,6 @@
   "email": {
     "title": "Mail wysłany z portalu Karma",
     "mail_to": "karmazdrowia@gmail.com"
-  }
+  },
+  "authentication_timeout": "1h"
 }

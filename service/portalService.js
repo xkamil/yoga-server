@@ -20,6 +20,14 @@ const portalService = {
         });
     },
 
+    get: (id) => {
+        return new Promise((resolve, reject) => {
+            Portal.findById(id)
+                .then(resolve)
+                .catch(err => reject(err))
+        });
+    },
+
     add: (portalData) => {
         return new Promise((resolve, reject) => {
             new Portal(portalData).save()
