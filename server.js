@@ -14,10 +14,12 @@ const authMid = require('./middleware/authorization');
 const loggingMid = require('./middleware/logging');
 const ENV = require('./utils').getEnvVariables();
 const configuration = Utils.getConfiguration();
+const getHttpsCredentials = Utils.getHttpsCredentials;
 const portalRouter = require('./routes/portal');
 const sectionRouter = require('./routes/section');
 const contentItemRouter = require('./routes/contentItem');
 const authenticationRouter = require('./routes/authentication');
+const https = require('https');
 
 logger.info('Environment configuration: \n' + JSON.stringify(ENV, null, 2));
 
@@ -81,8 +83,27 @@ router.use((err, req, res, next) => {
 
 app.use('/api', router);
 
-app.listen(ENV.PORT, () => {
-    logger.info('Server port: ' + ENV.PORT);
-    logger.info("Environment: " + ENV.ENV);
-    logger.info(`Database: ${configuration.database_url}`);
-});
+
+getHttpsCredentials()
+    .then(credentials => {
+        const httpsServer = https.createServer(credentials, app);
+        httpsServer.listen(ENV.PORT, () => {
+            logger.info('Server protocol: https');
+            logger.info('Server port: ' + ENV.PORT);
+            logger.info("Environment: " + ENV.ENV);
+            logger.info(`Database: ${configuration.database_url}`);
+        });
+    })
+    .catch(err => {
+        logger.error("Failed to start https server: ", err);
+
+        app.listen(ENV.PORT, () => {
+            logger.info('Server protocol: http');
+            logger.info('Server port: ' + ENV.PORT);
+            logger.info("Environment: " + ENV.ENV);
+            logger.info(`Database: ${configuration.database_url}`);
+        })
+    });
+
+
+

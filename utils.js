@@ -1,5 +1,6 @@
 const log4js = require('log4js');
 const logger = log4js.getLogger();
+const fs = require('fs');
 
 function getConfiguration() {
     if (!this.configuration) {
@@ -16,9 +17,9 @@ function getEnvVariables() {
         MAIL_PASSWORD: process.env.MAIL_PASSWORD || '',
         KARMA_USER: process.env.KARMA_USER || 'admin',
         KARMA_PASSWORD: process.env.KARMA_PASSWORD || 'admin',
-        DB_USER : process.env.DB_USER || '',
-        DB_PASSWORD : process.env.DB_PASSWORD || '',
-        JWT_SECRET : process.env.JWT_SECRET || 'ghdj456'
+        DB_USER: process.env.DB_USER || '',
+        DB_PASSWORD: process.env.DB_PASSWORD || '',
+        JWT_SECRET: process.env.JWT_SECRET || 'ghdj456'
     }
 }
 
@@ -53,9 +54,28 @@ function getLogger() {
     return logger;
 }
 
+function getHttpsCredentials() {
+    return new Promise((resolve, reject) => {
+        try {
+            const credentials = {
+                key: fs.readFileSync('../certs/cert.key'),
+                cert: fs.readFileSync('../certs/cert.crt')
+            };
+
+            resolve(credentials);
+
+        } catch (e) {
+            reject(e);
+        }
+    });
+
+
+}
+
 module.exports = {
     getConfiguration,
     getParsedDbUrl,
     getLogger,
-    getEnvVariables
+    getEnvVariables,
+    getHttpsCredentials
 };

@@ -21,6 +21,11 @@ KARMA_USER | admin | username for protected routes
 KARMA_PASSWORD | admin | password for karma user
 JWT_SECRET | ghdj456 | jwt secret
 
+* Https
+
+On production server runs with https protocol. You need to add 2 files in order to run server:
+Put key as cert.key and cert as cert.crt to certs directory:
+
 * Routes
 
 ```
