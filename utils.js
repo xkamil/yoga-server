@@ -1,6 +1,7 @@
 const log4js = require('log4js');
 const logger = log4js.getLogger();
 const fs = require('fs');
+const path = require('path');
 
 function getConfiguration() {
     if (!this.configuration) {
@@ -58,9 +59,9 @@ function getHttpsCredentials() {
     return new Promise((resolve, reject) => {
         try {
             const credentials = {
-                key: fs.readFileSync('../certs/cert.key'),
-                cert: fs.readFileSync('../certs/cert.crt')
-            };
+                    key: fs.readFileSync(path.join(__dirname, '/certs/cert.key')),
+                    cert: fs.readFileSync(path.join(__dirname, '/certs/cert.crt'))
+                };
 
             resolve(credentials);
 
