@@ -13,6 +13,7 @@ const contentItemSchema = new Schema(
             type: Object,
             required: true
         },
+        tags: {type: Array, default: []},
     },
     {
         versionKey: false,

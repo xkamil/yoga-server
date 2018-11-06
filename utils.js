@@ -69,8 +69,18 @@ function getHttpsCredentials() {
             reject(e);
         }
     });
+}
 
+function getUniqueElements(arr) {
+    const uniqueElements = [];
 
+    arr.forEach(e => {
+        if (uniqueElements.indexOf(e) === -1) {
+            uniqueElements.push(e);
+        }
+    });
+
+    return uniqueElements;
 }
 
 module.exports = {
@@ -78,5 +88,6 @@ module.exports = {
     getParsedDbUrl,
     getLogger,
     getEnvVariables,
-    getHttpsCredentials
+    getHttpsCredentials,
+    getUniqueElements
 };

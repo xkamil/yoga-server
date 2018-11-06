@@ -84,6 +84,9 @@ Put key as cert.key and cert as cert.crt to certs directory:
 
     GET /api/content_items/:id
         HTTP_200 - content item
+
+    GET /api/content_items/tags
+        HTTP_200 - get all tags with count       
               
     *POST /api/content_items
         HTTP_201 - content item created succesfully

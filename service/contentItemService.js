@@ -1,6 +1,7 @@
 const ContentItem = require("../model/contentItem");
 const resolveErrorType = require('../error').resolveErrorType;
 const logger = require('../utils').getLogger();
+const getUniqueElements = require('../utils').getUniqueElements;
 const contentItemService = {
 
     getAll: () => {
@@ -43,15 +44,41 @@ const contentItemService = {
     },
 
     update: (id, contentItemData) => {
-        const {styles, content} = contentItemData;
+        const {type, styles, content, tags} = contentItemData;
+        console.log(contentItemData);
 
         return new Promise((resolve, reject) => {
             logger.debug(`Updating content item ${id} with:\n ${JSON.stringify(contentItemData, null, 2)} `);
 
-            ContentItem.findByIdAndUpdate(id, {styles, content}, {runValidators: true})
+            ContentItem.findByIdAndUpdate(id, {type, styles, content, tags}, {runValidators: true})
                 .then(resolve)
                 .catch(err => reject(resolveErrorType(err)))
         });
+    },
+
+    getAllTags: () => {
+        return new Promise((resolve, reject) => {
+            ContentItem.find({}, (err, contentItems) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    const tags = contentItems.map(contentItem => contentItem.tags || []);
+                    const tagsCounter = {};
+
+                    tags.forEach(tg => {
+                       tg.forEach(tag=>{
+                           if (tagsCounter.hasOwnProperty(tag)) {
+                               tagsCounter[tag]++;
+                           } else {
+                               tagsCounter[tag] = 1;
+                           }
+                       })
+                    });
+
+                    resolve(tagsCounter);
+                }
+            })
+        })
     }
 };
 
