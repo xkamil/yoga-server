@@ -4,7 +4,7 @@ const Section = require('./section');
 
 const contentItemSchema = new Schema(
     {
-        type: {type: String, enum: ['table', 'gallery', 'text', 'text_and_image', 'list', 'contact'], required: true},
+        type: {type: String, enum: ['table', 'gallery', 'text', 'text_and_image', 'list', 'contact', 'schedule'], required: true},
         styles: {
             type: Object,
             required: true
