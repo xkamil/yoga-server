@@ -41,6 +41,10 @@ router.get('/health', authMid, function (req, res) {
     });
 });
 
+router.get('/validate_token', authMid, function (req, res) {
+    res.send('');
+});
+
 app.use('/api/portals', portalRouter);
 app.use('/api/sections', sectionRouter);
 app.use('/api/content_items', contentItemRouter);

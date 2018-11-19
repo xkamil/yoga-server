@@ -110,5 +110,9 @@ Put key as cert.key and cert as cert.crt to certs directory:
     // SERVER LOGS
     
     *GET /api/logs    
+    
+    // VALIDATE TOKEN
+    
+    *GET /api/validate_token    
            
 ```
