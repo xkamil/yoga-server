@@ -113,6 +113,9 @@ Put key as cert.key and cert as cert.crt to certs directory:
     
     // VALIDATE TOKEN
     
-    *GET /api/validate_token    
+    *GET /api/validate_token   
+    
+    // GET IMAGES
+    *GET /api/images    
            
 ```

@@ -34,6 +34,22 @@ mongoose.connect(Utils.getParsedDbUrl(), {useNewUrlParser: true});
 
 // ROUTES
 
+const request = require('request');
+const username = '915629246747733';
+const password = 'EMNYQ5vwrLxDNVHBPAUe3Vh3cF8';
+
+router.get("/images", authMid, (req, res, next) => {
+    request.get('http://api.cloudinary.com:80/v1_1/duvsjgmt5/resources/image', {
+        headers: {"Authorization": Buffer.from(username + ':' + password).toString('base64')}
+    }, (err, response, body) => {
+        if (err) {
+            next(err);
+        } else if (response.statusCode === 200) {
+            res.status(200).json(JSON.parse(body))
+        }
+    })
+});
+
 router.get('/health', authMid, function (req, res) {
     res.json({
         api: "UP",
