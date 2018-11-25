@@ -23,6 +23,14 @@ const portalService = {
     get: (id) => {
         return new Promise((resolve, reject) => {
             Portal.findById(id)
+                .populate({
+                    path: 'sections',
+                    model: 'Section',
+                    populate: {
+                        path: 'data',
+                        model: 'ContentItem'
+                    }
+                })
                 .then(resolve)
                 .catch(err => reject(err))
         });
