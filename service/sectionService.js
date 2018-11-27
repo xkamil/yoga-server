@@ -16,6 +16,10 @@ const sectionService = {
     get: (id) => {
         return new Promise((resolve, reject) => {
             Section.findById(id)
+                .populate({
+                    path: 'data',
+                    model: 'ContentItem'
+                })
                 .then(resolve)
                 .catch(err => reject(err))
         });
