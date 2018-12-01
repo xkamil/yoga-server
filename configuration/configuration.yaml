@@ -7,6 +7,7 @@ default:
     database_uri: mongodb://user3:user3user3@ds253959.mlab.com:53959/karma_test
     logging_level: debug
     authentication_timeout: 36000
+    portal_cache_timeout: 60
     email:
       title: Test mail from yoga
       to: ssjkamil@gmail.com

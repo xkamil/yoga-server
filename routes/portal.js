@@ -3,26 +3,34 @@ const router = express.Router();
 const authMid = require('../middleware/authorization');
 const portalService = require("../service/portalService");
 const logger = require('../libs/logger');
-let cachedPortals = null;
+const {getTime} = require('../utils');
+const conf = require('../configuration/configuration');
+
+const cache = {
+    cached_at: 0,
+    data: null
+};
 
 // reset cache
 router.get('/reset_cache', authMid, (req, res) => {
-    cachedPortals = null;
+    cache.cached_at = 0;
+    cache.data = null;
     res.send('');
 });
 
 // list
 router.get('/', (req, res, next) => {
-    if(cachedPortals){
-        logger.debug('Returning cached portals');
-        res.json(cachedPortals);
-    }else {
+    if (!cache.data || cache.cached_at + conf.portal_cache_timeout <= getTime()) {
         portalService.getAll()
             .then(portals => {
-                cachedPortals = portals;
+                cache.data = portals;
+                cache.cached_at = getTime();
                 res.json(portals)
             })
             .catch(err => next(err));
+    } else {
+        logger.debug('Returning cached portals');
+        res.json(cache.data);
     }
 });
 

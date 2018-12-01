@@ -22,6 +22,7 @@ Put key as cert.key and cert as cert.crt to certs directory:
     // AUTHENTICATION
     
     POST /api/auth/login - send user and password in order to get jwt token. For each request with * send token in header 'token' to authorize
+    *GET /api/auth/validate_token   
 
     // PORTALS
 
@@ -103,9 +104,6 @@ Put key as cert.key and cert as cert.crt to certs directory:
     
     *GET /api/logs    
     
-    // VALIDATE TOKEN
-    
-    *GET /api/validate_token   
     
     // GET IMAGES
     *GET /api/images    

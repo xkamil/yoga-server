@@ -1,19 +1,19 @@
 const fs = require('fs');
 const path = require('path');
-const conf = require('./configuration/configuration');
+const logger = require('./libs/logger');
+const KEY_PATH = path.join(__dirname, '/certs/cert.key');
+const CERT_PATH = path.join(__dirname, '/certs/cert.crt');
 
 function getHttpsCredentials() {
-    return new Promise((resolve, reject) => {
-        try {
-            const credentials = {
-                    key: fs.readFileSync(path.join(__dirname, '/certs/cert.key')),
-                    cert: fs.readFileSync(path.join(__dirname, '/certs/cert.crt'))
-                };
-            resolve(credentials);
-        } catch (e) {
-            reject(e);
+    if (fs.existsSync(KEY_PATH) && fs.existsSync(CERT_PATH)) {
+        return {
+            key: fs.readFileSync(KEY_PATH),
+            cert: fs.readFileSync(CERT_PATH)
         }
-    });
+    } else {
+        logger.info(`${KEY_PATH} or ${CERT_PATH} does not exists.`);
+        return null;
+    }
 }
 
 function getUniqueElements(arr) {
@@ -28,7 +28,12 @@ function getUniqueElements(arr) {
     return uniqueElements;
 }
 
+function getTime() {
+    return Math.floor(new Date().getTime() / 1000);
+}
+
 module.exports = {
     getHttpsCredentials,
-    getUniqueElements
+    getUniqueElements,
+    getTime
 };

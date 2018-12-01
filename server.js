@@ -54,10 +54,6 @@ router.get('/health', authMid, function (req, res) {
     });
 });
 
-router.get('/validate_token', authMid, function (req, res) {
-    res.send('');
-});
-
 app.use('/api/portals', portalRouter);
 app.use('/api/sections', sectionRouter);
 app.use('/api/content_items', contentItemRouter);
@@ -96,27 +92,12 @@ router.use((err, req, res, next) => {
 
 app.use('/api', router);
 
-
-getHttpsCredentials()
-    .then(credentials => {
-        const httpsServer = https.createServer(credentials, app);
-        httpsServer.listen(conf.port, () => {
-            logger.info('Server protocol: https');
-            logger.info('Server port: ' + conf.port);
-            logger.info("Environment: " + conf.env);
-            logger.debug(JSON.stringify(conf, null, 3))
-        });
-    })
-    .catch(err => {
-        logger.error("Unable to start https server: ", err.message);
-
-        app.listen(conf.port, () => {
-            logger.info('Server protocol: http');
-            logger.info('Server port: ' + conf.port);
-            logger.info("Environment: " + conf.env);
-            logger.debug('Configuration: \n', JSON.stringify(conf, null, 3))
-        })
-    });
+const httpsCredentials = getHttpsCredentials();
+const server = httpsCredentials ? https.createServer(credentials, app) : app;
+server.listen(conf.port, () => {
+    logger.info(`HTTP${httpsCredentials ? 'S' : ''} server started on port: ${conf.port} with env: ${conf.env}`);
+    logger.debug(JSON.stringify(conf, null, 3))
+});
 
 
 
