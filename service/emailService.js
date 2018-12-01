@@ -1,41 +1,26 @@
 const logger = require('../libs/logger');
 const nodemailer = require('nodemailer');
 const resolveErrorType = require('../error').resolveErrorType;
+const conf = require('../configuration/configuration');
 
-function EmailService(username, password) {
-    this.to = username;
-
-    this.transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        provider: 'gmail',
-        port: 465,
-        secure: true,
-        auth: {user: username, pass: password},
-        tls: {
-            rejectUnauthorized: false
-        }
-    });
-
-}
-
-EmailService.prototype.sendEmail = function (from, to, message, title) {
-    const validationErrors = this._validate(from, to, message);
+const sendEmail = (from, message) => {
+    const validationErrors = validate(from, message);
 
     const mailOptions = {
-        to,
+        to: conf.email.to,
         from,
-        subject: title,
+        subject: conf.email.title,
         text: message,
         replyTo: from
     };
 
-    logger.info('mail options: \n', JSON.stringify(mailOptions, null, 2));
+    logger.debug('mail options: \n', JSON.stringify(mailOptions, null, 2));
 
     if (validationErrors.length > 0) {
         return Promise.reject(resolveErrorType({name: 'ValidationError', errors: validationErrors}));
     } else {
         return new Promise((resolve, reject) => {
-            this.transporter.sendMail(mailOptions, function (error, response) {
+            transporter.sendMail(mailOptions, function (error, response) {
                 if (error) {
                     logger.debug(error);
                     reject(error);
@@ -48,31 +33,38 @@ EmailService.prototype.sendEmail = function (from, to, message, title) {
     }
 };
 
-EmailService.prototype._validate = function (from, to, message) {
+const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    provider: 'gmail',
+    port: 465,
+    secure: true,
+    auth: {
+        user: conf.email_server.username,
+        pass: conf.email_server.password
+    },
+    tls: {
+        rejectUnauthorized: false
+    }
+});
+
+const validate = (from, message) => {
     let errors = [];
 
-    if (!this._validateEmail(from)) {
+    if (!validateEmail(from)) {
         errors.push({field: 'from', message: 'Invalid sender email.'})
     }
 
-    if (!this._validateEmail(to)) {
-        errors.push({field: 'to', message: 'Invalid receiver email.'})
-    }
-
-    if (!this._validateMessage(message)) {
+    if (!message || message.trim() === '') {
         errors.push({field: 'message', message: 'Message can\'t be empty'})
     }
 
     return errors;
 };
 
-EmailService.prototype._validateEmail = function (email) {
+const validateEmail = (email) => {
     const re = /^[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/;
     return re.test(email);
 };
 
-EmailService.prototype._validateMessage = function (message) {
-    return message && message.trim() !== ''
-};
 
-module.exports = EmailService;
+module.exports = sendEmail;

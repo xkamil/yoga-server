@@ -8,7 +8,7 @@ const compression = require('compression');
 const mongoose = require('mongoose');
 const Utils = require('./utils');
 const logger = require('./libs/logger');
-const EmailService = require('./service/emailService');
+const sendEmail = require('./service/emailService');
 const fs = require('fs');
 const authMid = require('./middleware/authorization');
 const loggingMid = require('./middleware/logging');
@@ -65,17 +65,13 @@ app.use('/api/auth', authenticationRouter);
 
 // SENDING EMAIL //////////////////////////////////////////
 
-const emailService = new EmailService(conf.email_server.username, conf.email_server.password);
-
 router.post('/service/email', (req, res, next) => {
     const from = req.body.from;
     const message = req.body.message;
-    const title = req.body.title || conf.email.title;
-    const to = conf.email.mail_to;
 
-    logger.info(JSON.stringify(req.body, null, 2));
+    logger.debug("Sending email: \n", req.body);
 
-    emailService.sendEmail(from, to, message, title)
+    sendEmail(from, message)
         .then(response => res.json(response))
         .catch(err => next(err));
 });

@@ -9,11 +9,11 @@ default:
     authentication_timeout: 36000
     email:
       title: Test mail from yoga
-      mail_to: ssjkamil@gmail.com
+      to: ssjkamil@gmail.com
     email_server:
-      email:
-      username:
-      password:
+      email: ssjkamil@gmail.com
+      username: ssjkamil@gmail.com
+      password: programowanie171
     credentials:
       username: admin
       password: admin

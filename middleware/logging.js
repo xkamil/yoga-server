@@ -1,4 +1,3 @@
-const Utils = require('../utils');
 const logger = require('../libs/logger');
 
 function loggingMid(req, res, next) {
