@@ -7,22 +7,7 @@ npm run dev - stating server for development
 ```
 
 * Configuration
-  Copy configuration/configuration.yaml file to root directory and change configuration for env you want.
-
-* Required env variables - if not set default values will be used
-
-
-Name | Default | Description
---- | --- | ---
-ENV | dev | environment: dev/prod
-DB_USERNAME | null | database username
-DB_PASSWORD | null | database password
-MAIL_USER | null | mail service user. (only gmail supported). For example jan.kowalski@gmail.com
-MAIL_PASSWORD | null | mail service password
-MAIL_TO | null | where all mails will be sent from mail service
-KARMA_USER | admin | username for protected routes
-KARMA_PASSWORD | admin | password for karma user
-JWT_SECRET | ghdj456 | jwt secret
+  Copy configuration/configuration.yaml file to root directory and add env + configuration
 
 * Https
 
@@ -31,15 +16,19 @@ Put key as cert.key and cert as cert.crt to certs directory:
 
 * Routes
 
-```
+ ```
+    Routes marked with * need authorization
+
     // AUTHENTICATION
     
     POST /api/auth/login - send user and password in order to get jwt token. For each request with * send token in header 'token' to authorize
 
     // PORTALS
 
-    GET /api/portals
+    GET /api/portals 
         HTTP_200 - list of portals
+        
+    *GET /api/portals/reset_cache - resets cache for portals      
         
     GET /api/portals/:id
         HTTP_200 - portal

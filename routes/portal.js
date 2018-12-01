@@ -2,6 +2,38 @@ const express = require('express');
 const router = express.Router();
 const authMid = require('../middleware/authorization');
 const portalService = require("../service/portalService");
+const logger = require('../libs/logger');
+let cachedPortals = null;
+
+// reset cache
+router.get('/reset_cache', authMid, (req, res) => {
+    cachedPortals = null;
+    res.send('');
+});
+
+// list
+router.get('/', (req, res, next) => {
+    if(cachedPortals){
+        logger.debug('Returning cached portals');
+        res.json(cachedPortals);
+    }else {
+        portalService.getAll()
+            .then(portals => {
+                cachedPortals = portals;
+                res.json(portals)
+            })
+            .catch(err => next(err));
+    }
+});
+
+// get one
+router.get('/:id', (req, res, next) => {
+    const id = req.params.id;
+
+    portalService.get(id)
+        .then(portals => res.json(portals))
+        .catch(err => next(err));
+});
 
 // add
 router.post('/', authMid, (req, res, next) => {
@@ -28,22 +60,6 @@ router.post('/:id', authMid, (req, res, next) => {
 
     portalService.update(id, portalData)
         .then(portal => res.json('Portal updated'))
-        .catch(err => next(err));
-});
-
-// list
-router.get('/', (req, res, next) => {
-    portalService.getAll()
-        .then(portals => res.json(portals))
-        .catch(err => next(err));
-});
-
-// get one
-router.get('/:id', (req, res, next) => {
-    const id = req.params.id;
-
-    portalService.get(id)
-        .then(portals => res.json(portals))
         .catch(err => next(err));
 });
 
