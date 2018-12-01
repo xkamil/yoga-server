@@ -1,5 +1,5 @@
 const Utils = require('../utils');
-const logger = Utils.getLogger();
+const logger = require('../libs/logger');
 
 function loggingMid(req, res, next) {
     const resJson = res.json;

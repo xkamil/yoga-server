@@ -7,21 +7,18 @@ const cors = require('cors');
 const compression = require('compression');
 const mongoose = require('mongoose');
 const Utils = require('./utils');
-const logger = Utils.getLogger();
+const logger = require('./libs/logger');
 const EmailService = require('./service/emailService');
 const fs = require('fs');
 const authMid = require('./middleware/authorization');
 const loggingMid = require('./middleware/logging');
-const ENV = require('./utils').getEnvVariables();
-const configuration = Utils.getConfiguration();
+const conf = require('./configuration/configuration');
 const getHttpsCredentials = Utils.getHttpsCredentials;
 const portalRouter = require('./routes/portal');
 const sectionRouter = require('./routes/section');
 const contentItemRouter = require('./routes/contentItem');
 const authenticationRouter = require('./routes/authentication');
 const https = require('https');
-
-logger.info('Environment configuration: \n' + JSON.stringify(ENV, null, 2));
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -30,7 +27,7 @@ app.use(compression());
 app.use(loggingMid);
 
 
-mongoose.connect(Utils.getParsedDbUrl(), {useNewUrlParser: true});
+mongoose.connect(conf.database_uri, {useNewUrlParser: true});
 
 // ROUTES
 
@@ -68,13 +65,13 @@ app.use('/api/auth', authenticationRouter);
 
 // SENDING EMAIL //////////////////////////////////////////
 
-const emailService = new EmailService(ENV.MAIL_USER, ENV.MAIL_PASSWORD);
+const emailService = new EmailService(conf.email_server.username, conf.email_server.password);
 
 router.post('/service/email', (req, res, next) => {
     const from = req.body.from;
     const message = req.body.message;
-    const title = req.body.title || configuration.email.title;
-    const to = configuration.email.mail_to;
+    const title = req.body.title || conf.email.title;
+    const to = conf.email.mail_to;
 
     logger.info(JSON.stringify(req.body, null, 2));
 
@@ -107,21 +104,21 @@ app.use('/api', router);
 getHttpsCredentials()
     .then(credentials => {
         const httpsServer = https.createServer(credentials, app);
-        httpsServer.listen(ENV.PORT, () => {
+        httpsServer.listen(conf.port, () => {
             logger.info('Server protocol: https');
-            logger.info('Server port: ' + ENV.PORT);
-            logger.info("Environment: " + ENV.ENV);
-            logger.info(`Database: ${configuration.database_url}`);
+            logger.info('Server port: ' + conf.port);
+            logger.info("Environment: " + conf.env);
+            logger.debug(JSON.stringify(conf, null, 3))
         });
     })
     .catch(err => {
-        logger.error("Failed to start https server: ", err);
+        logger.error("Unable to start https server: ", err.message);
 
-        app.listen(ENV.PORT, () => {
+        app.listen(conf.port, () => {
             logger.info('Server protocol: http');
-            logger.info('Server port: ' + ENV.PORT);
-            logger.info("Environment: " + ENV.ENV);
-            logger.info(`Database: ${configuration.database_url}`);
+            logger.info('Server port: ' + conf.port);
+            logger.info("Environment: " + conf.env);
+            logger.debug('Configuration: \n', JSON.stringify(conf, null, 3))
         })
     });
 

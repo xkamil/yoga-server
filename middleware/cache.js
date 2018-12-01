@@ -1,5 +1,4 @@
-const Utils = require('../utils');
-const logger = Utils.getLogger();
+const logger = require('../libs/logger');
 
 function cacheMid(req, res, next) {
     if (!this.cache) {

@@ -6,6 +6,9 @@ npm start
 npm run dev - stating server for development
 ```
 
+* Configuration
+  Copy configuration/configuration.yaml file to root directory and change configuration for env you want.
+
 * Required env variables - if not set default values will be used
 
 

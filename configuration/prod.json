@@ -1,9 +1,0 @@
-{
-  "database_url": "mongodb://<dbuser>:<dbpassword>@ds253959.mlab.com:53959/karma_test",
-  "logging_level": "info",
-  "email": {
-    "title": "Mail wysłany z portalu Karma",
-    "mail_to": "karmazdrowia@gmail.com"
-  },
-  "authentication_timeout": "1h"
-}

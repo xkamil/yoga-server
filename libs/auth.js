@@ -1,11 +1,9 @@
 const jwt = require('jsonwebtoken');
-const Utils = require('../utils');
-const ENV = Utils.getEnvVariables();
-const configuration = Utils.getConfiguration();
+const conf = require('../configuration/configuration');
 
 function verifyJWTToken(token) {
     return new Promise((resolve, reject) => {
-        jwt.verify(token, ENV.JWT_SECRET, (err, decodedToken) => {
+        jwt.verify(token, conf.jwt_secret, (err, decodedToken) => {
             if (err || !decodedToken) {
                 return reject(err)
             }
@@ -18,8 +16,8 @@ function verifyJWTToken(token) {
 function createJWToken() {
     return jwt.sign({
         data: ''
-    }, ENV.JWT_SECRET, {
-        expiresIn: configuration.authentication_timeout,
+    }, conf.jwt_secret, {
+        expiresIn: conf.authentication_timeout,
         algorithm: 'HS256'
     });
 }

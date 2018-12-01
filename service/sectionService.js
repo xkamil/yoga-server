@@ -1,6 +1,6 @@
 const Section = require("../model/section");
 const resolveErrorType = require('../error').resolveErrorType;
-const logger = require('../utils').getLogger();
+const logger = require('../libs/logger');
 
 const sectionService = {
 

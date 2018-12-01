@@ -1,4 +1,4 @@
-const logger = require('../utils').getLogger();
+const logger = require('../libs/logger');
 const nodemailer = require('nodemailer');
 const resolveErrorType = require('../error').resolveErrorType;
 

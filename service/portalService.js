@@ -1,6 +1,6 @@
 const Portal = require("../model/portal");
 const resolveErrorType = require('../error').resolveErrorType;
-const logger = require('../utils').getLogger();
+const logger = require('../libs/logger');
 
 const portalService = {
 

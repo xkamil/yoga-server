@@ -1,6 +1,6 @@
 const ContentItem = require("../model/contentItem");
 const resolveErrorType = require('../error').resolveErrorType;
-const logger = require('../utils').getLogger();
+const logger = require('../libs/logger');
 const getUniqueElements = require('../utils').getUniqueElements;
 const contentItemService = {
 
