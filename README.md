@@ -2,12 +2,13 @@
 
 * Start server
 ```
+npm install
 npm start
-npm run dev - stating server for development
+
 ```
 
 * Configuration
-  Copy configuration/configuration.yaml file to root directory and add env + configuration
+  Copy configuration/default_configuration.yaml file to configuration/configuration.yaml and change what you need to
 
 * Https
 
