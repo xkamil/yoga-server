@@ -1,22 +1,33 @@
-environment: dev
+# active environment
+environment: default
 
+#environment configuration name
 default:
-    env: dev
+    #same as env configuration name
+    env: default
+    #server port
     port: 8080
     jwt_secret: sldgkhoiu58340th0089y
+    #uri to mongodb with credentials
     database_uri: mongodb://user3:user3user3@ds253959.mlab.com:53959/karma_test
+    #don't use debug on production as it can expose sensitive informations
     logging_level: debug
+    #timeout in seconds after jwt token will be invalidated
     authentication_timeout: 36000
+    #caching timeout in seconds for GET /api/portals
     portal_cache_timeout: 60
     email:
+      #title of mail sent by POST /api/service/email
       title: Test mail from yoga
+      #where mail will be sent
       to: ssjkamil@gmail.com
+    #email server that will send emails - only gmail supported
     email_server:
       username: example@gmail.com
       password: password
+    #credentials for authentication at POST /api/auth/login
     credentials:
       username: admin
       password: admin
-
 
 
