@@ -8,16 +8,10 @@ const compression = require('compression');
 const mongoose = require('mongoose');
 const Utils = require('./utils');
 const logger = require('./libs/logger');
-const sendEmail = require('./service/emailService');
-const fs = require('fs');
 const authMid = require('./middleware/authorization');
 const loggingMid = require('./middleware/logging');
 const conf = require('./configuration/configuration');
 const getHttpsCredentials = Utils.getHttpsCredentials;
-const portalRouter = require('./routes/portal');
-const sectionRouter = require('./routes/section');
-const contentItemRouter = require('./routes/contentItem');
-const authenticationRouter = require('./routes/authentication');
 const https = require('https');
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -47,38 +41,12 @@ router.get("/images", authMid, (req, res, next) => {
     })
 });
 
-router.get('/health', authMid, function (req, res) {
-    res.json({
-        api: "UP",
-        database: mongoose.connection.readyState === 1 ? "UP" : "DOWN"
-    });
-});
-
-app.use('/api/portals', portalRouter);
-app.use('/api/sections', sectionRouter);
-app.use('/api/content_items', contentItemRouter);
-app.use('/api/auth', authenticationRouter);
-
-// SENDING EMAIL //////////////////////////////////////////
-
-router.post('/service/email', (req, res, next) => {
-    const from = req.body.from;
-    const message = req.body.message;
-
-    logger.debug("Sending email: \n", req.body);
-
-    sendEmail(from, message)
-        .then(response => res.json(response))
-        .catch(err => next(err));
-});
-
-// LOGS ///////////////////////////////////////////////////
-
-router.get('/logs', authMid, (req, res, next) => {
-    fs.readFile('./logs.log', (err, data) => {
-        err ? next(err) : res.send(data);
-    });
-});
+app.use('/api/portals', require('./routes/portal'));
+app.use('/api/sections', require('./routes/section'));
+app.use('/api/content_items', require('./routes/contentItem'));
+app.use('/api/auth', require('./routes/authentication'));
+app.use('/api/service', require('./routes/service'));
+app.use('/api', require('./routes/health'));
 
 // ERROR HANDLER //////////////////////////////////////////
 
